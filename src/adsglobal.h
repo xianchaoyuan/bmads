@@ -20,12 +20,12 @@
 
 // ads 命名空间
 #ifdef ADS_NAMESPACE_ENABLED
-    #define ADS_BEGIN_NAMESPACE namespace ads {
-    #define ADS_END_NAMESPACE }
+    #define ADS_NAMESPACE_BEGIN namespace ads {
+    #define ADS_NAMESPACE_END }
     #define ADS_NS ::ads
 #else
-    #define ADS_BEGIN_NAMESPACE
-    #define ADS_END_NAMESPACE
+    #define ADS_NAMESPACE_BEGIN
+    #define ADS_NAMESPACE_END
     #define ADS_NS
 #endif
 

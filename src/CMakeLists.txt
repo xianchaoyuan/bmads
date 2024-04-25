@@ -7,6 +7,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 set(ads_sources
     adsglobal.h adsglobal.cpp
+    sectiontitlewidget.h sectiontitlewidget.cpp
+    sectioncontentwidget.h sectioncontentwidget.cpp
+    sectioncontent.h sectioncontent.cpp
+    sectionwidget.h sectionwidget.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${ads_sources})
