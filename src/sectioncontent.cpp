@@ -1,4 +1,5 @@
 #include "sectioncontent.h"
+#include "containerwidget.h"
 
 ADS_NAMESPACE_BEGIN
 
@@ -30,7 +31,7 @@ int SectionContent::getNewUid()
     return ++newUid;
 }
 
-SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueName, QWidget *titleWidget, QWidget *contentWidget)
+SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueName, QWidget *titleWidget, QWidget *contentWidget, ContainerWidget *containerWidget)
 {
     if (uniqueName.isEmpty()) {
         qFatal("Can not create SectionContent with empty uniqueName");
@@ -44,6 +45,7 @@ SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueNa
     sc->uniqueName_ = uniqueName;
     sc->titleWidget_ = titleWidget;
     sc->contentWidget_ = contentWidget;
+    sc->containerWidget_ = containerWidget;
     return sc;
 }
 

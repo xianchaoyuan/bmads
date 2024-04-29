@@ -9,8 +9,14 @@
 
 ADS_NAMESPACE_BEGIN
 
+class ContainerWidget;
+
 /**
  * @brief 分区内容
+ * @details
+ * @author bm
+ * @date 2024-04-18
+ * @version V1.0
  */
 class ADS_EXPORT_API SectionContent
 {
@@ -33,11 +39,13 @@ public:
     static int getNewUid();
     static RefPtr newSectionContent(const QString &uniqueName,
                                     QWidget *titleWidget,
-                                    QWidget *contentWidget);
+                                    QWidget *contentWidget,
+                                    ContainerWidget *containerWidget);
 
 private:
     QPointer<QWidget> titleWidget_;
     QPointer<QWidget> contentWidget_;
+    QPointer<ContainerWidget> containerWidget_;
 
     const int uid_;
     QString uniqueName_;

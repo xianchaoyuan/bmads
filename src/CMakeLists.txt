@@ -6,14 +6,25 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 set(ads_sources
+    internal.h
     adsglobal.h adsglobal.cpp
     sectiontitlewidget.h sectiontitlewidget.cpp
     sectioncontentwidget.h sectioncontentwidget.cpp
     sectioncontent.h sectioncontent.cpp
     sectionwidget.h sectionwidget.cpp
+    floatingwidget.h floatingwidget.cpp
+    containerwidget.h containerwidget.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${ads_sources})
+
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+        ADS_DEBUG_PRINT
+    )
+elseif (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+endif()
 
 target_compile_definitions(${PROJECT_NAME}
     PUBLIC
