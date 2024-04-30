@@ -3,6 +3,7 @@
 #include "sectioncontentwidget.h"
 #include "sectionwidget.h"
 #include "floatingwidget.h"
+#include "dropoverlay.h"
 
 #include <QSplitter>
 #include <QVariant>
@@ -21,11 +22,15 @@ static QSplitter *newSplitter(Qt::Orientation orientation = Qt::Horizontal, QWid
 
 ContainerWidget::ContainerWidget(QWidget *parent)
     : orientation_(Qt::Horizontal)
+    , dropOverlay_(new DropOverlay(this))
 {
     mainLayout_ = new QGridLayout();
     mainLayout_->setContentsMargins(9, 9, 9, 9);
     mainLayout_->setSpacing(0);
     setLayout(mainLayout_);
+
+    dropOverlay_->setAllowedAreas(ADS_NS::AllAreas);
+    dropOverlay_->showDropOverlay(this);
 }
 
 ContainerWidget::~ContainerWidget()

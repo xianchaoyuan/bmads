@@ -8,6 +8,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 set(ads_sources
     internal.h internal.cpp
     adsglobal.h adsglobal.cpp
+    dropoverlay.h dropoverlay.cpp
     sectiontitlewidget.h sectiontitlewidget.cpp
     sectioncontentwidget.h sectioncontentwidget.cpp
     sectioncontent.h sectioncontent.cpp

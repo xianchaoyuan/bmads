@@ -13,6 +13,7 @@ ADS_NAMESPACE_BEGIN
 
 class SectionWidget;
 class FloatingWidget;
+class DropOverlay;
 
 /**
  * @brief 总包含窗口
@@ -50,6 +51,8 @@ private:
     QPointer<QGridLayout> mainLayout_;
     QPointer<QSplitter> splitter_;
     Qt::Orientation orientation_;
+
+    QPointer<DropOverlay> dropOverlay_;
 };
 
 ADS_NAMESPACE_END
