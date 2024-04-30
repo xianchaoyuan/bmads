@@ -23,8 +23,14 @@ public:
     SectionTitleWidget(SectionContent::RefPtr sc, QWidget *parent = nullptr);
     virtual ~SectionTitleWidget();
 
+    //! 是否为活跃tab
+    bool isActiveTab() const;
+    void setActiveTab(bool active);
+
 private:
     SectionContent::RefPtr sectionContent_;
+
+    bool activeTab_{ false };
 };
 
 ADS_NAMESPACE_END

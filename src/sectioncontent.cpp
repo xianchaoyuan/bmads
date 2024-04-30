@@ -35,10 +35,10 @@ SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueNa
 {
     if (uniqueName.isEmpty()) {
         qFatal("Can not create SectionContent with empty uniqueName");
-        return RefPtr();
+        return RefPtr{};
     } else if (!titleWidget || !contentWidget) {
         qFatal("Can not create SectionContent with NULL values");
-        return RefPtr();
+        return RefPtr{};
     }
 
     RefPtr sc(new SectionContent());

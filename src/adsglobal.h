@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QFlags>
+#include <QDebug>
 
 #if defined(ADS_IMPORT)
     #define ADS_EXPORT_API

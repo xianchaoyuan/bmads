@@ -9,6 +9,7 @@
 #include <QStackedLayout>
 #include <QScrollArea>
 
+#include "internal.h"
 #include "adsglobal.h"
 #include "sectioncontent.h"
 
@@ -29,16 +30,33 @@ class ADS_EXPORT_API SectionWidget : public QFrame
     Q_OBJECT
 
 public:
-    explicit SectionWidget(QWidget *parent);
+    explicit SectionWidget(ContainerWidget *parent);
     virtual ~SectionWidget();
 
     int uid() const;
     int currentIndex() const;
 
+    //! 添加/删除 content
+    void addContent(const InternalContentData &data, bool autoActive = true);
+    bool takeContent(int uid, InternalContentData &data);
+    //! 调整content顺序
+    void moveContent(int from, int to);
+
+    //! 获取content索引
+    int indexOfContent(const SectionContent::RefPtr &sc) const;
+    int indexOfContentByUid(int uid) const;
+
     static int getNewUid();
+
+public slots:
+    void setCurrentIndex(int index);
 
 private slots:
     void onCloseButtonClicked();
+    void onTabsMenuActionTriggered(bool);
+
+private:
+    void updateTabsMenu();
 
 private:
     const int uid_;
@@ -46,6 +64,7 @@ private:
     QList<SectionContent::RefPtr> sectionContents_;
     QList<SectionTitleWidget *> titleWidgets_;
     QList<SectionContentWidget *> contentWidgets_;
+    QPointer<ContainerWidget> containerWidget_;
 
     QBoxLayout *topLayout_;  // 包含 tabs tabsmenu close
     QBoxLayout *tabsLayout_; // 包含 tabs

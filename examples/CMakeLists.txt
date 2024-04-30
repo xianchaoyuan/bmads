@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME} WIN32
     main.cpp
     mainwindow.h mainwindow.cpp
     mainwindow.ui
+    icontitlewidget.h icontitlewidget.cpp
 )
 
 target_compile_definitions(${PROJECT_NAME}

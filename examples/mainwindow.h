@@ -2,10 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPointer>
 
 namespace Ui {
 class MainWindow;
 }
+
+class ContainerWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -17,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    QPointer<ContainerWidget> container_;
 };
 
 #endif // MAINWINDOW_H

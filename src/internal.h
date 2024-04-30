@@ -2,6 +2,7 @@
 #define INTERNAL_H
 
 #include <QSharedPointer>
+#include <QSplitter>
 
 #include "adsglobal.h"
 
@@ -19,6 +20,8 @@ enum DropArea
     AllAreas = TopDropArea | RightDropArea | BottomDropArea | LeftDropArea | CenterDropArea
 };
 Q_DECLARE_FLAGS(DropAreas, DropArea)
+
+QSplitter *findParentSplitter(QWidget *w);
 
 class SectionContent;
 class SectionTitleWidget;
