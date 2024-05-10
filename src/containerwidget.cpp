@@ -28,9 +28,6 @@ ContainerWidget::ContainerWidget(QWidget *parent)
     mainLayout_->setContentsMargins(9, 9, 9, 9);
     mainLayout_->setSpacing(0);
     setLayout(mainLayout_);
-
-    dropOverlay_->setAllowedAreas(ADS_NS::AllAreas);
-    dropOverlay_->showDropOverlay(this);
 }
 
 ContainerWidget::~ContainerWidget()
@@ -55,6 +52,34 @@ SectionWidget *ContainerWidget::addSectionContent(const SectionContent::RefPtr &
     return dropContent(data, sw, area, false);
 }
 
+QRect ContainerWidget::outerTopDropRect() const
+{
+    QRect r = rect();
+    int h = r.height() / 100 * 5;
+    return QRect(r.left(), r.top(), r.width(), h);
+}
+
+QRect ContainerWidget::outerRightDropRect() const
+{
+    QRect r = rect();
+    int w = r.width() / 100 * 5;
+    return QRect(r.right() - w, r.top(), w, r.height());
+}
+
+QRect ContainerWidget::outerBottomDropRect() const
+{
+    QRect r = rect();
+    int h = r.height() / 100 * 5;
+    return QRect(r.left(), r.bottom() - h, r.width(), h);
+}
+
+QRect ContainerWidget::outerLeftDropRect() const
+{
+    QRect r = rect();
+    int w = r.width() / 100 * 5;
+    return QRect(r.left(), r.top(), w, r.height());
+}
+
 void ContainerWidget::addSection(SectionWidget *section)
 {
     // 创建默认分割器
@@ -67,6 +92,18 @@ void ContainerWidget::addSection(SectionWidget *section)
         return;
     }
     splitter_->addWidget(section);
+}
+
+SectionWidget *ContainerWidget::sectionAt(const QPoint &pos) const
+{
+    const QPoint gpos = mapToGlobal(pos);
+    for (int i = 0; i < sectionWidgets_.size(); ++i) {
+        SectionWidget *sw = sectionWidgets_[i];
+        if (sw->rect().contains(sw->mapFromGlobal(gpos))) {
+            return sw;
+        }
+    }
+    return nullptr;
 }
 
 SectionWidget *ContainerWidget::newSectionWidget()
@@ -87,8 +124,26 @@ SectionWidget *ContainerWidget::dropContent(const InternalContentData &data, Sec
         area = CenterDropArea;
     }
 
-    // BmTODO 外部区域
+    // 外部区域
     if (!targetSection) {
+        switch (area)
+        {
+        case TopDropArea:
+            ret = dropContentOuterHelper(data, Qt::Vertical, mainLayout_, false);
+            break;
+        case RightDropArea:
+            ret = dropContentOuterHelper(data, Qt::Horizontal, mainLayout_, true);
+            break;
+        case CenterDropArea:
+        case BottomDropArea:
+            ret = dropContentOuterHelper(data, Qt::Vertical, mainLayout_, true);
+            break;
+        case LeftDropArea:
+            ret = dropContentOuterHelper(data, Qt::Horizontal, mainLayout_, false);
+            break;
+        default:
+            return nullptr;
+        }
         return ret;
     }
 
@@ -170,6 +225,44 @@ SectionWidget *ContainerWidget::dropContent(const InternalContentData &data, Sec
     }
 
     return ret;
+}
+
+SectionWidget *ContainerWidget::dropContentOuterHelper(const InternalContentData &data, Qt::Orientation orientation, QLayout *l, bool append)
+{
+    SectionWidget *sw = newSectionWidget();
+    sw->addContent(data, true);
+
+    QSplitter *oldsp = findImmediateSplitter(this);
+    if (!oldsp) {
+        QSplitter *sp = newSplitter(orientation);
+        if (l->count() > 0) {
+            ADS_PRINT("Still items in layout. This should never happen.");
+            QLayoutItem *li = l->takeAt(0);
+            delete li;
+        }
+        l->addWidget(sp);
+        sp->addWidget(sw);
+    } else if (oldsp->orientation() == orientation || oldsp->count() == 1) {
+        oldsp->setOrientation(orientation);
+        if (append)
+            oldsp->addWidget(sw);
+        else
+            oldsp->insertWidget(0, sw);
+    } else {
+        QSplitter *sp = newSplitter(orientation);
+        if (append) {
+            QLayoutItem *li = l->replaceWidget(oldsp, sp);
+            sp->addWidget(oldsp);
+            sp->addWidget(sw);
+            delete li;
+        } else {
+            sp->addWidget(sw);
+            QLayoutItem *li = l->replaceWidget(oldsp, sp);
+            sp->addWidget(oldsp);
+            delete li;
+        }
+    }
+    return sw;
 }
 
 ADS_NAMESPACE_END

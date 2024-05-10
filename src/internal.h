@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <QSplitter>
+#include <QLayout>
 
 #include "adsglobal.h"
 
@@ -20,8 +21,6 @@ enum DropArea
     AllAreas = TopDropArea | RightDropArea | BottomDropArea | LeftDropArea | CenterDropArea
 };
 Q_DECLARE_FLAGS(DropAreas, DropArea)
-
-QSplitter *findParentSplitter(QWidget *w);
 
 class SectionContent;
 class SectionTitleWidget;
@@ -44,6 +43,17 @@ public:
     SectionTitleWidget *titleWidget{};
     SectionContentWidget *contentWidget{};
 };
+
+QSplitter *findParentSplitter(QWidget *w);
+QSplitter *findImmediateSplitter(QWidget *w);
+
+class ContainerWidget;
+class SectionWidget;
+
+ContainerWidget *findParentContainerWidget(QWidget *w);
+SectionWidget *findParentSectionWidget(QWidget *w);
+
+void deleteEmptySplitter(ContainerWidget *cw);
 
 ADS_NAMESPACE_END
 

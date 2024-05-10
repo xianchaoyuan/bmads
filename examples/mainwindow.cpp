@@ -29,7 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
     container_ = new ContainerWidget();
     setCentralWidget(container_);
 
-    SectionWidget *sw = container_->addSectionContent(createCalendarSC(container_), sw, LeftDropArea);
+    SectionWidget *sw = nullptr;
+    sw = container_->addSectionContent(createCalendarSC(container_), sw, LeftDropArea);
+    sw = container_->addSectionContent(createCalendarSC(container_), sw, RightDropArea);
 }
 
 MainWindow::~MainWindow()

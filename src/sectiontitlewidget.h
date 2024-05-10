@@ -8,6 +8,8 @@
 
 ADS_NAMESPACE_BEGIN
 
+class FloatingWidget;
+
 /**
  * @brief 分区标题窗口
  * @details
@@ -18,6 +20,7 @@ ADS_NAMESPACE_BEGIN
 class ADS_EXPORT_API SectionTitleWidget : public QFrame
 {
     Q_OBJECT
+    Q_PROPERTY(bool activeTab READ isActiveTab WRITE setActiveTab NOTIFY activeTabChanged)
 
 public:
     SectionTitleWidget(SectionContent::RefPtr sc, QWidget *parent = nullptr);
@@ -27,9 +30,22 @@ public:
     bool isActiveTab() const;
     void setActiveTab(bool active);
 
+protected:
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+
+signals:
+    void clicked();
+    void activeTabChanged();
+
 private:
     SectionContent::RefPtr sectionContent_;
 
+    QPointer<FloatingWidget> floatingWidget_;
+    QPoint dragStartPos_;
+
+    bool tabMoving_{ false };
     bool activeTab_{ false };
 };
 

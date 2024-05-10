@@ -6,6 +6,7 @@
 
 #include "adsglobal.h"
 #include "sectioncontent.h"
+#include "internal.h"
 
 ADS_NAMESPACE_BEGIN
 
@@ -32,6 +33,8 @@ public:
                             SectionContentWidget *contentWidget,
                             SectionContent::RefPtr sc, QWidget *parent = nullptr);
     virtual ~FloatingWidget();
+
+    bool takeContent(InternalContentData &data);
 
 private slots:
     void onCloseButtonClicked();

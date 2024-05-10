@@ -39,10 +39,18 @@ public:
     //! 添加分区内容到分区窗口中
     SectionWidget *addSectionContent(const SectionContent::RefPtr &sc, SectionWidget *sw = nullptr, DropArea area = CenterDropArea);
 
+    //! outer 放置区域
+    QRect outerTopDropRect() const;
+    QRect outerRightDropRect() const;
+    QRect outerBottomDropRect() const;
+    QRect outerLeftDropRect() const;
+
 private:
     void addSection(SectionWidget *section);
+    SectionWidget *sectionAt(const QPoint &pos) const;
     SectionWidget *newSectionWidget();
     SectionWidget *dropContent(const InternalContentData &data, SectionWidget *targetSection, DropArea area, bool autoActive = true);
+    SectionWidget *dropContentOuterHelper(const InternalContentData &data, Qt::Orientation orientation, QLayout *l, bool append);
 
 private:
     QList<SectionWidget *> sectionWidgets_;

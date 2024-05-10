@@ -24,6 +24,7 @@ FloatingWidget::FloatingWidget(ContainerWidget *container,
     l->setSpacing(0);
     setLayout(l);
 
+    titleWidget->setActiveTab(false);
     titleLayout_ = new QBoxLayout(QBoxLayout::LeftToRight);
     titleLayout_->addWidget(titleWidget, 1);
     l->addLayout(titleLayout_, 0);
@@ -46,6 +47,23 @@ FloatingWidget::FloatingWidget(ContainerWidget *container,
 FloatingWidget::~FloatingWidget()
 {
     containerWidget_->floatingWidgets_.removeAll(this);
+}
+
+bool FloatingWidget::takeContent(InternalContentData &data)
+{
+    data.content = sectionContent_;
+    data.titleWidget = titleWidget_;
+    data.contentWidget = contentWidget_;
+
+    titleLayout_->removeWidget(titleWidget_);
+    titleWidget_->setParent(containerWidget_);
+    titleWidget_ = nullptr;
+
+    layout()->removeWidget(contentWidget_);
+    contentWidget_->setParent(containerWidget_);
+    contentWidget_ = nullptr;
+
+    return true;
 }
 
 void FloatingWidget::onCloseButtonClicked()

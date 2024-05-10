@@ -97,6 +97,7 @@ void SectionWidget::addContent(const InternalContentData &data, bool autoActive)
     titleWidgets_.append(data.titleWidget);
     tabsLayout_->insertWidget(tabsLayout_->count() - tabsLayoutInitCount_, data.titleWidget);
     data.titleWidget->setVisible(true);
+    connect(data.titleWidget, &SectionTitleWidget::clicked, this, &SectionWidget::onSectionTitleClicked);
 
     // 将内容小部件添加到堆叠窗口
     contentWidgets_.append(data.contentWidget);
@@ -180,7 +181,8 @@ void SectionWidget::moveContent(int from, int to)
     QLayoutItem *liFrom = nullptr;
     liFrom = tabsLayout_->takeAt(from);
     tabsLayout_->insertItem(to, liFrom);
-    delete liFrom;
+    // TODO 为什么liFrom不能释放
+    // delete liFrom;
 
     liFrom = contentsLayout_->takeAt(from);
     contentsLayout_->insertWidget(to, liFrom->widget());
@@ -203,6 +205,28 @@ int SectionWidget::indexOfContentByUid(int uid) const
         return i;
     }
     return -1;
+}
+
+int SectionWidget::indexOfContentByTitlePos(const QPoint &pos, QWidget *exclude) const
+{
+    int index = -1;
+    for (int i = 0; i < titleWidgets_.size(); ++i) {
+        if (titleWidgets_[i]->geometry().contains(pos) && (exclude == nullptr || titleWidgets_[i] != exclude)) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+QRect SectionWidget::titleAreaGeometry() const
+{
+    return topLayout_->geometry();
+}
+
+QRect SectionWidget::contentAreaGeometry() const
+{
+    return contentsLayout_->geometry();
 }
 
 int SectionWidget::getNewUid()
@@ -242,9 +266,26 @@ void SectionWidget::setCurrentIndex(int index)
     contentsLayout_->setCurrentIndex(index);
 }
 
+void SectionWidget::onSectionTitleClicked()
+{
+    SectionTitleWidget *stw = qobject_cast<SectionTitleWidget *>(sender());
+    if (stw) {
+        int index = tabsLayout_->indexOf(stw);
+        setCurrentIndex(index);
+    }
+}
+
 void SectionWidget::onCloseButtonClicked()
 {
-    // BmTODO hide current content
+    const int index = currentIndex();
+    if (index < 0 || index > sectionContents_.size() - 1)
+        return;
+
+    SectionContent::RefPtr sc = sectionContents_.at(index);
+    if (sc.isNull())
+        return;
+
+    // TODO 隐藏
 }
 
 void SectionWidget::onTabsMenuActionTriggered(bool)

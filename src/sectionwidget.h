@@ -45,6 +45,12 @@ public:
     //! 获取content索引
     int indexOfContent(const SectionContent::RefPtr &sc) const;
     int indexOfContentByUid(int uid) const;
+    int indexOfContentByTitlePos(const QPoint &pos, QWidget *exclude = nullptr) const;
+
+    const QList<SectionContent::RefPtr> &sectionContents() const { return sectionContents_; }
+
+    QRect titleAreaGeometry() const;
+    QRect contentAreaGeometry() const;
 
     static int getNewUid();
 
@@ -52,6 +58,7 @@ public slots:
     void setCurrentIndex(int index);
 
 private slots:
+    void onSectionTitleClicked();
     void onCloseButtonClicked();
     void onTabsMenuActionTriggered(bool);
 

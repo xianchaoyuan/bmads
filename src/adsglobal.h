@@ -30,4 +30,7 @@
     #define ADS_NS
 #endif
 
+// 本机窗口边框的宽度（基于操作系统）
+#define ADS_WINDOW_FRAME_BORDER_WIDTH 7
+
 #endif // ADSGLOBAL_H

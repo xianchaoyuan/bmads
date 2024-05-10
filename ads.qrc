@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/ads">
+        <file>resource/style/default-windows.css</file>
+    </qresource>
+</RCC>

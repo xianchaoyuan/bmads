@@ -17,7 +17,7 @@ set(ads_sources
     containerwidget.h containerwidget.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${ads_sources})
+add_library(${PROJECT_NAME} SHARED ${ads_sources} ../ads.qrc)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME}

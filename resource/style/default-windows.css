@@ -1,0 +1,68 @@
+/*
+ * Default style sheet on Windows Platforms
+ * Note: Always use CSS-classes with and without "ads--" namespace to support Qt4 & Qt5
+ */
+
+ContainerWidget
+{
+	background: palette(dark);
+}
+
+ContainerWidget QSplitter::handle
+{
+	background: palette(dark);
+}
+
+SectionWidget
+{
+	background: palette(window);
+	border: 1px solid palette(light);
+}
+
+SectionWidget #tabsMenuButton::menu-indicator
+{
+	image: none;
+}
+
+SectionTitleWidget
+{
+	background: palette(window);
+	border-color: palette(light);
+	border-style: solid;
+	border-width: 0 1px 0 0;
+	padding: 0 9px;
+}
+
+SectionTitleWidget[activeTab="true"]
+{
+/*	background: palette(light);*/
+/*	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(240, 240, 240, 255));*/
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:0.5, stop:0 palette(window), stop:1 palette(light));
+}
+
+SectionContentWidget
+{
+	background: palette(light);
+	border-color: palette(light);
+	border-style: solid;
+	border-width: 1px 0 0 0;
+}
+
+/* Special: QLabels inside SectionTitleWidget
+*/
+SectionTitleWidget QLabel
+{
+	color: palette(dark);
+}
+
+SectionTitleWidget[activeTab="true"] QLabel
+{
+	color: palette(foreground);
+}
+
+/* Special: QLabels inside SectionTitleWidget, which is floating
+*/
+FloatingWidget SectionTitleWidget QLabel
+{
+	color: palette(foreground);
+}
