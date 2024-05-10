@@ -49,6 +49,11 @@ FloatingWidget::~FloatingWidget()
     containerWidget_->floatingWidgets_.removeAll(this);
 }
 
+SectionContent::RefPtr FloatingWidget::sectionContent() const
+{
+    return sectionContent_;
+}
+
 bool FloatingWidget::takeContent(InternalContentData &data)
 {
     data.content = sectionContent_;

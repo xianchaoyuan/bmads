@@ -7,6 +7,8 @@
 
 #include "adsglobal.h"
 
+#define SWLookupMapById(X)   X->swLookupMapById_
+
 ADS_NAMESPACE_BEGIN
 
 enum DropArea
@@ -42,6 +44,22 @@ public:
     QSharedPointer<SectionContent> content;
     SectionTitleWidget *titleWidget{};
     SectionContentWidget *contentWidget{};
+};
+
+/**
+ * @brief 隐藏项
+ */
+class HiddenSectionItem
+{
+public:
+    HiddenSectionItem()
+        : preferredSectionId(-1)
+        , preferredSectionIndex(-1)
+    {}
+
+    int preferredSectionId;
+    int preferredSectionIndex;
+    InternalContentData data;
 };
 
 QSplitter *findParentSplitter(QWidget *w);

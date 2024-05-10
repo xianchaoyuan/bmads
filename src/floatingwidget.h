@@ -34,6 +34,7 @@ public:
                             SectionContent::RefPtr sc, QWidget *parent = nullptr);
     virtual ~FloatingWidget();
 
+    SectionContent::RefPtr sectionContent() const;
     bool takeContent(InternalContentData &data);
 
 private slots:

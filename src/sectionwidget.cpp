@@ -285,7 +285,7 @@ void SectionWidget::onCloseButtonClicked()
     if (sc.isNull())
         return;
 
-    // TODO 隐藏
+    containerWidget_->hideSectionContent(sc);
 }
 
 void SectionWidget::onTabsMenuActionTriggered(bool)

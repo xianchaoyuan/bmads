@@ -39,6 +39,9 @@ public:
     //! 添加分区内容到分区窗口中
     SectionWidget *addSectionContent(const SectionContent::RefPtr &sc, SectionWidget *sw = nullptr, DropArea area = CenterDropArea);
 
+    bool showSectionContent(const SectionContent::RefPtr &sc);
+    bool hideSectionContent(const SectionContent::RefPtr &sc);
+
     //! outer 放置区域
     QRect outerTopDropRect() const;
     QRect outerRightDropRect() const;
@@ -55,6 +58,12 @@ private:
 private:
     QList<SectionWidget *> sectionWidgets_;
     QList<FloatingWidget *> floatingWidgets_;
+    QHash<int, HiddenSectionItem> hiddenSectionContents_;
+
+    // 查找助手
+    QHash<int, SectionWidget *> swLookupMapById_;
+    QHash<int, SectionContent::WeakPtr> scLookupMapById_;
+    QHash<QString, SectionContent::WeakPtr> scLookupMapByName_;
 
     QPointer<QGridLayout> mainLayout_;
     QPointer<QSplitter> splitter_;

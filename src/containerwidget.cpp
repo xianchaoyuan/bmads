@@ -52,6 +52,89 @@ SectionWidget *ContainerWidget::addSectionContent(const SectionContent::RefPtr &
     return dropContent(data, sw, area, false);
 }
 
+bool ContainerWidget::showSectionContent(const SectionContent::RefPtr &sc)
+{
+    // 在floatings中搜索
+    for (int i = 0; i < floatingWidgets_.count(); ++i) {
+        FloatingWidget *fw = floatingWidgets_.at(i);
+        const bool found = fw->sectionContent()->uid() == sc->uid();
+        if (!found)
+            continue;
+        fw->setVisible(true);
+        fw->titleWidget_->setVisible(true);
+        fw->contentWidget_->setVisible(true);
+        return true;
+    }
+
+    // 在隐藏部分中搜索
+    // 试着在最后一个位置显示它们，否则只需将其附加到第一个部分
+    if (hiddenSectionContents_.contains(sc->uid())) {
+        const HiddenSectionItem hsi = hiddenSectionContents_.take(sc->uid());
+        hsi.data.titleWidget->setVisible(true);
+        hsi.data.contentWidget->setVisible(true);
+        SectionWidget *sw = nullptr;
+        if (hsi.preferredSectionId > 0 && (sw = SWLookupMapById(this).value(hsi.preferredSectionId)) != nullptr) {
+            sw->addContent(hsi.data, true);
+            return true;
+        } else if (sectionWidgets_.size() > 0 && (sw = sectionWidgets_.first()) != nullptr) {
+            sw->addContent(hsi.data, true);
+            return true;
+        } else {
+            sw = newSectionWidget();
+            addSection(sw);
+            sw->addContent(hsi.data, true);
+            return true;
+        }
+    }
+
+    qWarning("Unable to show SectionContent, don't know where 8-/ (already visible?)");
+    return false;
+}
+
+bool ContainerWidget::hideSectionContent(const SectionContent::RefPtr &sc)
+{
+    // 在floatings中搜索
+    for (int i = 0; i < floatingWidgets_.count(); ++i) {
+        const bool found = floatingWidgets_.at(i)->sectionContent()->uid() == sc->uid();
+        if (!found)
+            continue;
+        floatingWidgets_.at(i)->setVisible(false);
+        return true;
+    }
+
+    // 在sections中查找
+    // 需要将SC从SW中完全移除，并将其固定在单独的列表，只要再次为SC调用 showSectionContent 即可。
+    for (int i = 0; i < sectionWidgets_.count(); ++i) {
+        SectionWidget *sw = sectionWidgets_.at(i);
+        const bool found = sw->indexOfContent(sc) >= 0;
+        if (!found)
+            continue;
+
+        HiddenSectionItem hsi;
+        hsi.preferredSectionId = sw->uid();
+        hsi.preferredSectionIndex = sw->indexOfContent(sc);
+        if (!sw->takeContent(sc->uid(), hsi.data))
+            return false;
+
+        hsi.data.titleWidget->setVisible(false);
+        hsi.data.contentWidget->setVisible(false);
+        hiddenSectionContents_.insert(sc->uid(), hsi);
+
+        // 如果SW没有任何其他SC，我们需要将其删除。
+        if (sw->sectionContents().isEmpty()) {
+            delete sw;
+            sw = NULL;
+            deleteEmptySplitter(this);
+        }
+        return true;
+    }
+
+    if (hiddenSectionContents_.contains(sc->uid()))
+        return true;
+
+    return false;
+}
+
 QRect ContainerWidget::outerTopDropRect() const
 {
     QRect r = rect();
