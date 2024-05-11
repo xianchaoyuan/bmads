@@ -73,7 +73,7 @@ bool FloatingWidget::takeContent(InternalContentData &data)
 
 void FloatingWidget::onCloseButtonClicked()
 {
-    // BmTODO hide section
+    containerWidget_->hideSectionContent(sectionContent_);
 }
 
 ADS_NAMESPACE_END

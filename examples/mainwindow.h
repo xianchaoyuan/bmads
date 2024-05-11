@@ -18,6 +18,9 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	virtual ~MainWindow();
 
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent *event);
+
 private:
     Ui::MainWindow *ui;
 

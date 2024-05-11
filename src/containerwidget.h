@@ -4,6 +4,7 @@
 #include <QFrame>
 #include <QSplitter>
 #include <QGridLayout>
+#include <QMenu>
 
 #include "internal.h"
 #include "adsglobal.h"
@@ -42,6 +43,9 @@ public:
     bool showSectionContent(const SectionContent::RefPtr &sc);
     bool hideSectionContent(const SectionContent::RefPtr &sc);
 
+    //! 基于可用的SectionContents创建一个QMenu
+    QMenu *createContextMenu() const;
+
     //! outer 放置区域
     QRect outerTopDropRect() const;
     QRect outerRightDropRect() const;
@@ -54,6 +58,9 @@ private:
     SectionWidget *newSectionWidget();
     SectionWidget *dropContent(const InternalContentData &data, SectionWidget *targetSection, DropArea area, bool autoActive = true);
     SectionWidget *dropContentOuterHelper(const InternalContentData &data, Qt::Orientation orientation, QLayout *l, bool append);
+
+private slots:
+    void onActionToggleSectionContentVisibility(bool visible);
 
 private:
     QList<SectionWidget *> sectionWidgets_;

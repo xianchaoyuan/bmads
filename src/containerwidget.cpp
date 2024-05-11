@@ -7,6 +7,7 @@
 
 #include <QSplitter>
 #include <QVariant>
+#include <QAction>
 #include <QDebug>
 
 ADS_NAMESPACE_BEGIN
@@ -123,7 +124,7 @@ bool ContainerWidget::hideSectionContent(const SectionContent::RefPtr &sc)
         // 如果SW没有任何其他SC，我们需要将其删除。
         if (sw->sectionContents().isEmpty()) {
             delete sw;
-            sw = NULL;
+            sw = nullptr;
             deleteEmptySplitter(this);
         }
         return true;
@@ -133,6 +134,65 @@ bool ContainerWidget::hideSectionContent(const SectionContent::RefPtr &sc)
         return true;
 
     return false;
+}
+
+QMenu *ContainerWidget::createContextMenu() const
+{
+    QMap<QString, QAction *> actions;
+
+    // Visible contents of sections
+    for (int i = 0; i < sectionWidgets_.size(); ++i) {
+        const SectionWidget *sw = sectionWidgets_.at(i);
+        const QList<SectionContent::RefPtr> &contents = sw->sectionContents();
+        foreach (const SectionContent::RefPtr &sc, contents) {
+            QAction *a = new QAction(QIcon(), sc->title(), nullptr);
+            a->setObjectName(QString("ads-action-sc-%1").arg(QString::number(sc->uid())));
+            a->setProperty("uid", sc->uid());
+            a->setProperty("type", "section");
+            a->setCheckable(true);
+            a->setChecked(true);
+            QObject::connect(a, &QAction::toggled, this, &ContainerWidget::onActionToggleSectionContentVisibility);
+
+            actions.insert(a->text(), a);
+        }
+    }
+
+    // Hidden contents of sections
+    QHashIterator<int, HiddenSectionItem> hiddenIter(hiddenSectionContents_);
+    while (hiddenIter.hasNext()) {
+        hiddenIter.next();
+        const SectionContent::RefPtr sc = hiddenIter.value().data.content;
+
+        QAction *a = new QAction(QIcon(), sc->title(), nullptr);
+        a->setObjectName(QString("ads-action-sc-%1").arg(QString::number(sc->uid())));
+        a->setProperty("uid", sc->uid());
+        a->setProperty("type", "section");
+        a->setCheckable(true);
+        a->setChecked(false);
+        QObject::connect(a, &QAction::toggled, this, &ContainerWidget::onActionToggleSectionContentVisibility);
+
+        actions.insert(a->text(), a);
+    }
+
+    // Floating contents
+    for (int i = 0; i < floatingWidgets_.size(); ++i) {
+        const FloatingWidget *fw = floatingWidgets_.at(i);
+        const SectionContent::RefPtr sc = fw->sectionContent();
+
+        QAction *a = new QAction(QIcon(), sc->title(), nullptr);
+        a->setObjectName(QString("ads-action-sc-%1").arg(QString::number(sc->uid())));
+        a->setProperty("uid", sc->uid());
+        a->setProperty("type", "floating");
+        a->setCheckable(true);
+        a->setChecked(fw->isVisible());
+        QObject::connect(a, &QAction::toggled, this, &ContainerWidget::onActionToggleSectionContentVisibility);
+
+        actions.insert(a->text(), a);
+    }
+
+    QMenu *m = new QMenu(nullptr);
+    m->addActions(actions.values());
+    return m;
 }
 
 QRect ContainerWidget::outerTopDropRect() const
@@ -346,6 +406,24 @@ SectionWidget *ContainerWidget::dropContentOuterHelper(const InternalContentData
         }
     }
     return sw;
+}
+
+void ContainerWidget::onActionToggleSectionContentVisibility(bool visible)
+{
+    QAction *act = qobject_cast<QAction *>(sender());
+    if (!act)
+        return;
+    const int uid = act->property("uid").toInt();
+    const SectionContent::RefPtr sc = SCLookupMapById(this).value(uid).toStrongRef();
+    if (sc.isNull()) {
+        qCritical() << "Can not find content by ID" << uid;
+        return;
+    }
+
+    if (visible)
+        showSectionContent(sc);
+    else
+        hideSectionContent(sc);
 }
 
 ADS_NAMESPACE_END

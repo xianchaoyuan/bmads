@@ -66,11 +66,14 @@ SectionWidget::SectionWidget(ContainerWidget *parent)
     l->addLayout(contentsLayout_, 1);
 
     tabsLayoutInitCount_ = tabsLayout_->count();
+
+    SWLookupMapById(containerWidget_).insert(uid_, this);
 }
 
 SectionWidget::~SectionWidget()
 {
     if (containerWidget_) {
+        SWLookupMapById(containerWidget_).remove(uid_);
         containerWidget_->sectionWidgets_.removeAll(this);
     }
 

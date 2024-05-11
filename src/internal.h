@@ -7,6 +7,8 @@
 
 #include "adsglobal.h"
 
+#define SCLookupMapById(X)   X->scLookupMapById_
+#define SCLookupMapByName(X) X->scLookupMapByName_
 #define SWLookupMapById(X)   X->swLookupMapById_
 
 ADS_NAMESPACE_BEGIN

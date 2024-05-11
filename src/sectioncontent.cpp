@@ -1,5 +1,6 @@
 #include "sectioncontent.h"
 #include "containerwidget.h"
+#include "internal.h"
 
 ADS_NAMESPACE_BEGIN
 
@@ -11,6 +12,11 @@ SectionContent::SectionContent()
 
 SectionContent::~SectionContent()
 {
+    if (containerWidget_) {
+        SCLookupMapById(containerWidget_).remove(uid_);
+        SCLookupMapByName(containerWidget_).remove(uniqueName_);
+    }
+
     titleWidget_->deleteLater();
     contentWidget_->deleteLater();
 }
@@ -36,9 +42,12 @@ SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueNa
     if (uniqueName.isEmpty()) {
         qFatal("Can not create SectionContent with empty uniqueName");
         return RefPtr{};
-    } else if (!titleWidget || !contentWidget) {
+    } else if (!titleWidget || !contentWidget || !containerWidget) {
         qFatal("Can not create SectionContent with NULL values");
         return RefPtr{};
+    } else if (SCLookupMapByName(containerWidget).contains(uniqueName)) {  // 已经存在
+        qFatal("Can not create SectionContent with already used uniqueName");
+        return RefPtr();
     }
 
     RefPtr sc(new SectionContent());
@@ -46,6 +55,10 @@ SectionContent::RefPtr SectionContent::newSectionContent(const QString &uniqueNa
     sc->titleWidget_ = titleWidget;
     sc->contentWidget_ = contentWidget;
     sc->containerWidget_ = containerWidget;
+
+    SCLookupMapById(containerWidget).insert(sc->uid(), sc);
+    SCLookupMapByName(containerWidget).insert(sc->uniqueName(), sc);
+
     return sc;
 }
 
